@@ -7,6 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "test": "jest",
+    "test:coverage": "jest --coverage",
     "postinstall": "node scripts/copy-stockfish.js"
   },
   "dependencies": {
@@ -20,10 +22,13 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.0.0",
+    "@types/jest": "^30.0.0",
     "@types/node": "^22.0.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
+    "jest": "^30.3.0",
     "tailwindcss": "^4.0.0",
+    "ts-jest": "^29.4.6",
     "typescript": "^5.8.0"
   }
 }

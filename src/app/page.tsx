@@ -17,6 +17,14 @@ const games = [
     icon: "♟",
     accentColor: "#b829dd",
   },
+  {
+    href: "/uno",
+    title: "UNO",
+    description:
+      "Esvazie sua mão antes da IA. Curingas, bloqueios e reversões em modo 1 vs 1.",
+    icon: "🃏",
+    accentColor: "#ff4444",
+  },
 ] as const;
 
 export default function HomePage() {

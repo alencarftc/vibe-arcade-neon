@@ -17,6 +17,12 @@ function formatTime(seconds: number): string {
 
 const difficulties: Difficulty[] = ["easy", "medium", "hard"];
 
+const DIFFICULTY_LABELS: Record<Difficulty, string> = {
+  easy: "Fácil",
+  medium: "Médio",
+  hard: "Difícil",
+};
+
 export function GameHeader({
   difficulty,
   mistakes,
@@ -49,7 +55,7 @@ export function GameHeader({
                 : "text-white/40 border border-white/10 hover:text-white/70 hover:border-white/30",
             )}
           >
-            {d}
+            {DIFFICULTY_LABELS[d]}
           </button>
         ))}
       </div>
@@ -59,7 +65,7 @@ export function GameHeader({
           {formatTime(elapsed)}
         </span>
         <span className="text-white/60">
-          Mistakes:{" "}
+          Erros:{" "}
           <span
             className={cn(
               mistakes > 0
@@ -80,7 +86,7 @@ export function GameHeader({
             "animate-pulse",
           )}
         >
-          You Won!
+          Você venceu!
         </div>
       )}
     </div>

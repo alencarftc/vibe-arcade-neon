@@ -387,6 +387,35 @@ export { CartItemsPage } from "./features/cart-items";
 - Server Actions are tested with mocked `httpClient` — **never** hit real APIs.
 - Test hook **behavior** visible to components, not internal implementation.
 
+### TDD Workflow (mandatory for new features)
+
+1. Write `service.test.ts` and `model.test.ts` **before** implementing.
+2. Verify tests fail (RED) with `pnpm test`.
+3. Implement until tests pass (GREEN).
+4. Refactor with tests green.
+
+### 3A Pattern (Arrange-Act-Assert)
+
+Every `it()` block must follow 3A. Mark each section with a comment:
+
+```ts
+it('removes played card from hand', () => {
+  // Arrange
+  const state = makeState();
+  const cardId = 'h1';
+
+  // Act
+  const newState = playCard(state, cardId);
+
+  // Assert
+  expect(newState.hands.human.find(c => c.id === cardId)).toBeUndefined();
+});
+```
+
+- **One concept per test** — split multi-concept scenarios into separate `it()` blocks.
+- Co-locate tests: `service.test.ts` sits next to `service.ts`.
+- Jest config: `jest.config.ts` at root — supports `@/` alias via `moduleNameMapper`.
+
 ---
 
 ## 12. Quick Diagnostic

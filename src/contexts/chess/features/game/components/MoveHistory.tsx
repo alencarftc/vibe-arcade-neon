@@ -8,10 +8,12 @@ interface Props {
 }
 
 export function MoveHistory({ moveHistory }: Props) {
-  const bottomRef = useRef<HTMLDivElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    }
   }, [moveHistory.length]);
 
   const pairs: [GameMove, GameMove | null][] = [];
@@ -24,7 +26,7 @@ export function MoveHistory({ moveHistory }: Props) {
       <h3 className="mb-2 text-xs font-display tracking-widest uppercase text-white/30">
         Movimentos
       </h3>
-      <div className="flex-1 overflow-y-auto space-y-0.5 pr-1 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-white/10">
+      <div ref={scrollRef} className="flex-1 overflow-y-auto space-y-0.5 pr-1 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-white/10">
         {pairs.length === 0 && (
           <p className="text-xs text-white/20 italic">
             Nenhum movimento ainda.
@@ -46,7 +48,6 @@ export function MoveHistory({ moveHistory }: Props) {
             )}
           </div>
         ))}
-        <div ref={bottomRef} />
       </div>
     </div>
   );

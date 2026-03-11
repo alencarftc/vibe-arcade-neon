@@ -36,14 +36,14 @@ export function SudokuGrid({
   return (
     <div
       className={cn(
-        "grid grid-cols-3 gap-0.5 rounded-lg overflow-hidden",
-        "bg-neon-purple/40 border-2 border-neon-purple/40",
+        "grid grid-cols-3 gap-[3px] rounded-lg overflow-hidden",
+        "bg-neon-purple/60 border-2 border-neon-purple/50",
         won &&
           "border-neon-green/60 bg-neon-green/20 shadow-[0_0_30px_var(--color-neon-green)]",
       )}
     >
       {Array.from({ length: 9 }, (_, boxIndex) => (
-        <div key={boxIndex} className="grid grid-cols-3 gap-px bg-white/5">
+        <div key={boxIndex} className="grid grid-cols-3 gap-[1px] bg-white/8">
           {getBoxCells(board, boxIndex).map(({ cell, row, col }) => {
             const isSelected =
               selectedCell?.row === row && selectedCell?.col === col;

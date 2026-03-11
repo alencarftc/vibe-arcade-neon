@@ -16,13 +16,13 @@ export function ActionBar({
   return (
     <div className="flex items-center justify-center gap-3">
       <Button onClick={onNewGame} variant="primary" size="sm">
-        New Game
+        Nova partida
       </Button>
       <Button onClick={onHint} variant="ghost" size="sm" disabled={disabled}>
-        Hint
+        Dica
       </Button>
       <Button onClick={onErase} variant="ghost" size="sm" disabled={disabled}>
-        Erase
+        Apagar
       </Button>
     </div>
   );

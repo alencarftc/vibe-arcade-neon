@@ -175,6 +175,45 @@ shared/
 | Components | Storybook | Low — mocked props |
 | Pages/Shells | Playwright | Low — critical flows |
 
+### TDD Workflow (mandatory for new features)
+
+1. Write tests **before** the implementation (`service.test.ts`, `model.test.ts`).
+2. Run `pnpm test` — all new tests must fail first (RED).
+3. Write the minimum implementation to make tests pass (GREEN).
+4. Refactor if needed, keeping tests green.
+
+### 3A Pattern (Arrange-Act-Assert)
+
+Every test must follow the 3A structure. Each section must be clearly identifiable:
+
+```ts
+it('applies a skip card in 2-player mode keeping the same player turn', () => {
+  // Arrange
+  const state = makeState({ /* setup */ });
+
+  // Act
+  const newState = applySkip(state);
+
+  // Assert
+  expect(newState.currentPlayer).toBe('human');
+});
+```
+
+Rules:
+- **Arrange**: set up all objects, data, and context needed for the test.
+- **Act**: call exactly ONE function / method under test.
+- **Assert**: check the observable outcome. One logical assertion per test (multiple `expect` calls are fine as long as they verify a single concept).
+- No business logic in tests. Tests must read like specifications.
+- Co-locate test files: `service.test.ts` sits next to `service.ts`.
+
+### Jest Configuration
+
+- Config: `jest.config.ts` at workspace root.
+- Path alias `@/` is supported via `moduleNameMapper`.
+- `ts-jest` is used with `moduleResolution: node` override (Turbopack uses `bundler`, Jest needs `node`).
+- Run all tests: `pnpm test`.
+- Run with coverage: `pnpm test --coverage`.
+
 ---
 
 ## Common Mistakes to Avoid
