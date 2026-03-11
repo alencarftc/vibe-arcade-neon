@@ -1,0 +1,35 @@
+{
+  // ─── Search exclusions ────────────────────────────────────────────────────
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/.next": true,
+    "**/dist": true,
+    "**/.turbo": true,
+    "**/.cache": true,
+    "**/coverage": true
+  },
+
+  // ─── File associations ────────────────────────────────────────────────────
+  "files.associations": {
+    ".cursorrules": "markdown",
+    ".windsurfrules": "markdown",
+    "*.cjs": "javascript"
+  },
+
+  // ─── TypeScript ───────────────────────────────────────────────────────────
+  "js/ts.preferences.importModuleSpecifierEnding": "minimal",
+  "js/ts.suggest.autoImports": true,
+  "js/ts.preferences.importModuleSpecifier": "non-relative",
+
+  // ─── Editor ───────────────────────────────────────────────────────────────
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": "explicit"
+  },
+
+  // ─── Architecture guardrails reminder ─────────────────────────────────────
+  // Import boundaries enforced by: pnpm lint:graph (dependency-cruiser)
+  // Layer rules: app/ → contexts/{name}/index.ts → shared/
+  // service.ts & use-cases.ts must NEVER import from react, next/*, or shared/next
+  "editor.rulers": [100]
+}

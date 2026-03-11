@@ -1,0 +1,42 @@
+@import "tailwindcss";
+
+@theme {
+  --color-neon-blue: #00f0ff;
+  --color-neon-purple: #b829dd;
+  --color-neon-pink: #ff2d95;
+  --color-neon-green: #39ff14;
+  --color-neon-yellow: #ffe600;
+  --color-surface: #0a0a1a;
+  --color-surface-light: #141428;
+  --color-surface-cell: #1a1a3e;
+  --color-surface-initial: #1e1e48;
+  --color-surface-selected: #2a1a4e;
+  --color-surface-highlight: #161636;
+  --color-border-grid: #2a2a5e;
+  --font-display: var(--font-orbitron), ui-monospace, monospace;
+}
+
+body {
+  background: radial-gradient(
+    ellipse at 50% 0%,
+    #16162e 0%,
+    var(--color-surface) 65%
+  );
+  min-height: 100dvh;
+}
+
+/* CRT scanline overlay */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.03) 2px,
+    rgba(0, 0, 0, 0.03) 4px
+  );
+  pointer-events: none;
+  z-index: 9999;
+}

@@ -1,0 +1,106 @@
+# New Architecture Rules
+
+You are an expert Next.js developer working in a workspace that enforces a strict Bounded Context + Vertical Slice architecture. Follow every rule below on every file you create or modify.
+
+## Folder Structure
+
+```
+src/
+  app/        ← Next.js App Router ONLY
+  contexts/   ← Business domain (Bounded Contexts + Vertical Slices)
+  shared/     ← Shared Kernel — NO business logic
+```
+
+Dependency flow: app/ → contexts/{name}/index.ts → shared/. NEVER reverse.
+
+## Import Rules (build errors if violated)
+
+- contexts/A MUST NOT import from contexts/B/features/... — use contexts/B/index.ts
+- app/ MUST NOT import from contexts/{name}/features/... — use contexts/{name}/index.ts
+- shared/ MUST NOT import from contexts/
+- contexts/ MUST NOT import from app/
+- service.ts and use-cases.ts MUST NOT import from react, next/*, or shared/next
+- Always use @/ path aliases for cross-feature imports
+
+## Feature Structure
+
+Minimum (CRUD): model.ts + api.ts + components/ + index.ts
+Add only when justified:
+- dto.ts + mapper.ts → backend contract differs from domain shape
+- service.ts → business logic beyond simple CRUD
+- use-cases.ts → api.ts orchestration grows complex
+- store.ts → cross-component global UI state needed
+- ports.ts → infrastructure is unstable or swappable
+
+## model.ts
+- Zod schemas ONLY. Types inferred via z.infer<>.
+- Zero business logic. Zero framework imports.
+
+## service.ts
+- Pure TypeScript. ZERO imports from react, next, next/*, shared/next, browser APIs.
+- Pure functions only. Throws DomainError from @/shared/errors.
+- Testable with plain Jest — no providers, no framework mocks.
+
+## api.ts (Server Actions)
+- Always starts with 'use server'
+- Validates ALL inputs with Zod safeParse
+- Checks session/auth BEFORE business logic
+- Returns ActionResult<T> from @/shared/types/action-result
+- Delegates to service.ts or use-cases.ts — never implements business logic inline
+- Catches DomainError → returns { ok: false, error: err.code }
+- Never exposes stack traces
+
+## components/ Convention
+- {Feature}Page.tsx = RSC (no 'use client'): fetch data, validate session, pass to Shell
+- {Feature}Shell.tsx = 'use client': interactive state, events, charts, grids, hooks
+- Presentation components = pure (props in, callbacks out, no fetch, no global state)
+
+## hooks/
+- Encapsulate UI behavior: filtering, sorting, local interaction state
+- DO NOT execute business logic
+- DO NOT call fetch directly — use React Query
+
+## dto.ts + mapper.ts
+- dto.ts mirrors exact backend API shape (snake_case, legacy naming)
+- mapper.ts converts DTO ↔ domain type
+- DTOs NEVER leak beyond mapper.ts
+
+## State Management
+- Server state → React Query (useQuery/useMutation) in hooks/
+- Global UI state → Jotai atoms in store.ts
+- Local state → useState/useReducer inside the component
+- React Query keys MUST be prefixed by context: ['cart', id], not just [id]
+- NEVER mirror server data in Jotai atoms (two sources of truth = bugs)
+- NEVER use React Query for pure UI state like isDrawerOpen
+
+## Error Hierarchy (from @/shared/errors)
+- DomainError → business rule violated (throw in service.ts)
+- ValidationError → invalid input
+- UnauthorizedError → missing/invalid session
+Flow: service.ts throws → api.ts catches → ActionResult<T> → useMutation → UI message
+
+## Shared Kernel (shared/)
+Directories: api/ errors/ hooks/ types/ utils/ lib/ ui/ next/
+Promotion criteria: used by 3+ features across DIFFERENT contexts AND no domain semantics.
+- shared/ui/ = generic primitives only (Button, Modal, Badge, Input, Spinner)
+- Domain-named components (CartBadge, OrderStatusChip) belong in their context
+- service.ts and use-cases.ts NEVER import from shared/next/
+
+## index.ts (MANDATORY)
+- Every feature folder MUST have index.ts exporting its public API
+- Every context folder MUST have index.ts exporting its public API
+
+## app/ Layer
+Allowed: route segments, metadata, error/loading boundaries, revalidatePath/revalidateTag, multi-context composition
+FORBIDDEN: business rules, logic from service.ts, imports from contexts/{name}/features/...
+
+## Common Anti-patterns to Refuse
+- Business logic in hooks → extract to service.ts
+- Importing contexts/B/features/... from context A → use contexts/B/index.ts
+- CartBadge in shared/ui/ → move to contexts/cart/
+- Server data in Jotai atom → use React Query
+- Orchestration in api.ts → extract to use-cases.ts
+- next/headers in service.ts → move to api.ts
+
+See templates/ for feature and context scaffolds.
+See architecture.md for full rationale and examples.
